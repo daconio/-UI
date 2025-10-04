@@ -1,5 +1,5 @@
 {
-  "name": "동적 경쟁 리더보드",
+  "name": " 동적 경쟁 리더보드",
   "description": "Dacon 플랫폼에서 영감을 받아 React, TypeScript, Tailwind CSS로 구축된 AI 대회를 위한 역동적이고 시각적으로 매력적인 리더보드입니다.",
   "requestFramePermissions": []
 }

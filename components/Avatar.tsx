@@ -3,28 +3,30 @@ import { Member } from '../types';
 
 interface AvatarProps {
   member: Member;
+  isLeader?: boolean;
+  sizeClass?: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ member }) => {
-  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+const Avatar: React.FC<AvatarProps> = ({ member, isLeader = false, sizeClass = 'h-10 w-10' }) => {
+  const leaderClass = isLeader ? 'border-y2k-pink' : 'border-transparent';
 
   return (
-    <div className="group relative">
-        <div
-            className={`h-10 w-10 ${member.bgColorClass} group-hover:scale-110 group-hover:ring-2 group-hover:ring-offset-1 group-hover:ring-indigo-500 transition-all duration-300`}
-            style={{ clipPath: hexagonClipPath }}
-        >
+    <>
+      <div className="group relative">
           <div
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${member.avatarUrl})`,
-              clipPath: hexagonClipPath,
-              transform: 'scale(0.9)',
-            }}
-            aria-label={`${member.name} 아바타`}
-          />
-        </div>
-    </div>
+              className={`${sizeClass} ${member.bgColorClass} p-0.5 group-hover:scale-110 transition-transform duration-200 ease-in-out border-2 ${leaderClass} hover:!border-y2k-cyan`}
+          >
+            <div
+              className="w-full h-full bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${member.avatarUrl})`,
+                imageRendering: 'pixelated',
+              }}
+              aria-label={`${member.name} 아바타`}
+            />
+          </div>
+      </div>
+    </>
   );
 };
 

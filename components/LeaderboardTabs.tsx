@@ -8,20 +8,20 @@ interface LeaderboardTabsProps {
 
 const LeaderboardTabs: React.FC<LeaderboardTabsProps> = ({ activeTab, onTabClick }) => {
   return (
-    <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-      <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+    <div className="mb-4 border-b-2 border-black dark:border-y2k-cyan">
+      <nav className="flex space-x-8" aria-label="Tabs">
         {Object.values(Tab).map((tab) => (
           <button
             key={tab}
             onClick={() => onTabClick(tab)}
             className={`
-              whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
+              whitespace-nowrap py-3 px-1 border-b-4 font-bold text-lg uppercase
               ${
                 activeTab === tab
-                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'
+                  ? 'border-y2k-pink text-black dark:text-white'
+                  : 'border-transparent text-black/60 hover:text-black dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-400'
               }
-              transition-colors duration-200 focus:outline-none
+              transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-y2k-pink
             `}
           >
             {tab}

@@ -1,22 +1,29 @@
 import React from 'react';
-import { LeaderboardEntry, Member } from '../types';
+import { LeaderboardEntry, Member, SortKey, SortDirection } from '../types';
 import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardRow from './LeaderboardRow';
 
 interface LeaderboardProps {
   data: LeaderboardEntry[];
   onAvatarClick: (member: Member) => void;
+  sortConfig: { key: SortKey; direction: SortDirection };
+  onSort: (key: SortKey) => void;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ data, onAvatarClick }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ data, onAvatarClick, sortConfig, onSort }) => {
   return (
-    <div className="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden">
+    <div className="border-2 border-black dark:border-y2k-cyan bg-y2k-bg-light dark:bg-y2k-surface-dark shadow-hard-light dark:shadow-hard">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <LeaderboardHeader />
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {data.map((entry) => (
-              <LeaderboardRow key={entry.rank} entry={entry} onAvatarClick={onAvatarClick} />
+        <table className="min-w-full">
+          <LeaderboardHeader sortConfig={sortConfig} onSort={onSort} />
+          <tbody>
+            {data.map((entry, index) => (
+              <LeaderboardRow 
+                key={entry.teamId} 
+                entry={entry} 
+                onAvatarClick={onAvatarClick} 
+                rowIndex={index}
+              />
             ))}
           </tbody>
         </table>

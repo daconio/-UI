@@ -1,4 +1,8 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+// Fix: Add Tab enum to resolve import error in LeaderboardTabs.tsx.
+export enum Tab {
+  Public = '공개',
+  Private = '비공개',
+}
 
 export interface Member {
   id: string;
@@ -8,15 +12,26 @@ export interface Member {
   bgColorClass: string;
 }
 
-export type MedalType = 'gold' | 'silver' | 'none';
+export type MedalType = 'gold' | 'silver' | 'bronze' | 'none';
+
+export type SortKey = 'rank' | 'team' | 'entries' | 'score' | 'lastSubmission' | 'badges';
+export type SortDirection = 'ascending' | 'descending';
 
 export interface Badge {
+  id: string;
   iconClass: string;
   name: string;
   colorClass: string;
+  description: string;
+}
+
+export interface ScoreHistoryPoint {
+  score: number;
+  date: Date;
 }
 
 export interface LeaderboardEntry {
+  teamId: number;
   rank: number;
   rankChange: number;
   team: string;
@@ -27,9 +42,7 @@ export interface LeaderboardEntry {
   entries: number;
   lastSubmission: string;
   joinDate: string;
-}
-
-export enum Tab {
-    Public = '공개',
-    Private = '비공개',
+  scoreHistory: ScoreHistoryPoint[];
+  c_time: string; // Raw date string for accurate sorting
+  isNew?: boolean;
 }

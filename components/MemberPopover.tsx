@@ -7,33 +7,29 @@ interface MemberPopoverProps {
 }
 
 const MemberPopover: React.FC<MemberPopoverProps> = ({ member, children }) => {
-  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
-  
   return (
     <div className="group relative flex">
       {children}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 bg-y2k-bg-light dark:bg-black text-black dark:text-white border-2 border-black dark:border-y2k-cyan shadow-hard-light dark:shadow-hard p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
         <div className="flex items-center mb-2">
           <div
-            className={`h-12 w-12 flex-shrink-0 ${member.bgColorClass}`}
-            style={{ clipPath: hexagonClipPath }}
+            className={`h-12 w-12 flex-shrink-0 ${member.bgColorClass} p-0.5 border-2 border-black dark:border-y2k-cyan`}
           >
             <div
               className="w-full h-full bg-cover bg-center"
               style={{
                 backgroundImage: `url(${member.avatarUrl})`,
-                clipPath: hexagonClipPath,
-                transform: 'scale(0.92)',
+                imageRendering: 'pixelated',
               }}
               aria-label={`${member.name} 아바타`}
             />
           </div>
           <div className="ml-3">
-            <p className="font-bold text-gray-900 dark:text-white">{member.name}</p>
+            <p className="font-bold text-lg">{member.name}</p>
           </div>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{member.bio}</p>
-        <div className="absolute w-3 h-3 bg-white dark:bg-gray-800 transform rotate-45 -bottom-1.5 left-1/2 -translate-x-1/2 border-b border-r border-gray-200 dark:border-gray-700"></div>
+        <p className="text-sm text-black font-mono">{member.bio}</p>
+        <div className="absolute w-3 h-3 bg-y2k-bg-light dark:bg-black border-b-2 border-r-2 border-black dark:border-y2k-cyan transform rotate-45 -bottom-[9px] left-1/2 -translate-x-1/2"></div>
       </div>
     </div>
   );

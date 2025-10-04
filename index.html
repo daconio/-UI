@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>동적 경쟁 리더보드</title>
+  <title>데이콘 경진대회 리더보드</title>
+  <link rel="icon" href="https://r2-images.dacon.co.kr/external/favicon.ico" />
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="데이콘 경진대회 리더보드" />
+  <meta property="og:description" content="데이콘 경진대회를 박진감 넘치도록 즐겨보세요" />
+  <meta property="og:image" content="https://dacon-images.s3.ap-northeast-2.amazonaws.com/dacon20220919.png" />
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 
   <!-- Dark Mode Initializer & Tailwind Config -->
   <script>
@@ -23,10 +34,30 @@
     // Configure Tailwind to use the 'class' strategy for dark mode
     tailwind.config = {
       darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            'pixel': ['"Pixelify Sans"', 'sans-serif'],
+          },
+          colors: {
+            'y2k-pink': '#e94560',
+            'y2k-cyan': '#00f5d4',
+            'y2k-bg-dark': '#1a1a2e',
+            'y2k-bg-light': '#f3e9dc',
+            'y2k-surface-dark': '#16213e',
+          },
+          boxShadow: {
+            'hard': '4px 4px 0px rgba(0,0,0,0.8)',
+            'hard-sm': '2px 2px 0px rgba(0,0,0,0.8)',
+            'hard-light': '4px 4px 0px rgba(0,0,0,0.2)',
+            'hard-sm-light': '2px 2px 0px rgba(0,0,0,0.2)',
+          }
+        }
+      }
     }
   </script>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900">
+<body class="bg-y2k-bg-light dark:bg-y2k-bg-dark font-pixel transition-colors duration-300">
   
   <!-- React root element -->
   <div id="root"></div>
