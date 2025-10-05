@@ -22,16 +22,113 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 
-  <!-- Dark Mode Initializer & Tailwind Config -->
-  <script>
-    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
+  <!-- Theme Definitions -->
+  <style>
+    /* Y2K Theme (Default) */
+    :root.theme-y2k {
+      --color-primary: #e94560;
+      --color-secondary: #00f5d4;
+      --color-background: #f3e9dc;
+      --color-surface: #ffffff;
+      --color-text-main: #000000;
+      --color-text-muted: #4a4a4a;
+      --color-border-main: #000000;
+      --color-accent-up: #00f5d4;
+      --color-accent-down: #e94560;
+      --color-shadow: rgba(0,0,0,0.8);
+    }
+    html.dark:root.theme-y2k {
+      --color-background: #1a1a2e;
+      --color-surface: #16213e;
+      --color-text-main: #ffffff;
+      --color-text-muted: #a0a0a0;
+      --color-border-main: #00f5d4;
+    }
+
+    /* Cyberpunk Theme */
+    :root.theme-cyberpunk {
+      --color-primary: #ff00ff;
+      --color-secondary: #00ffff;
+      --color-background: #1a0a2e;
+      --color-surface: #2a1a3e;
+      --color-text-main: #ffffff;
+      --color-text-muted: #b0b0b0;
+      --color-border-main: #00ffff;
+      --color-accent-up: #00ff00;
+      --color-accent-down: #ff00ff;
+      --color-shadow: rgba(0, 255, 255, 0.7);
+    }
+    html.dark:root.theme-cyberpunk {
+      --color-background: #0d0517;
+      --color-surface: #1f0f2b;
+      --color-text-main: #f0f0f0;
+      --color-text-muted: #c0c0c0;
+      --color-border-main: #ff00ff;
+      --color-shadow: rgba(255, 0, 255, 0.7);
+    }
+
+    /* Retro Theme */
+    :root.theme-retro {
+      --color-primary: #d95f02;
+      --color-secondary: #7570b3;
+      --color-background: #fdf6e3;
+      --color-surface: #eee8d5;
+      --color-text-main: #657b83;
+      --color-text-muted: #93a1a1;
+      --color-border-main: #586e75;
+      --color-accent-up: #859900;
+      --color-accent-down: #dc322f;
+      --color-shadow: rgba(88, 110, 117, 0.8);
+    }
+    html.dark:root.theme-retro {
+      --color-background: #002b36;
+      --color-surface: #073642;
+      --color-text-main: #839496;
+      --color-text-muted: #586e75;
+      --color-border-main: #93a1a1;
+      --color-shadow: rgba(147, 161, 161, 0.5);
     }
     
-    // Configure Tailwind to use the 'class' strategy for dark mode
+    /* Minimalist Theme */
+    :root.theme-minimalist {
+      --color-primary: #000000;
+      --color-secondary: #555555;
+      --color-background: #ffffff;
+      --color-surface: #f5f5f5;
+      --color-text-main: #000000;
+      --color-text-muted: #777777;
+      --color-border-main: #000000;
+      --color-accent-up: #007acc;
+      --color-accent-down: #d11a2a;
+      --color-shadow: rgba(0,0,0,0.5);
+    }
+    html.dark:root.theme-minimalist {
+      --color-primary: #ffffff;
+      --color-secondary: #bbbbbb;
+      --color-background: #000000;
+      --color-surface: #1a1a1a;
+      --color-text-main: #ffffff;
+      --color-text-muted: #888888;
+      --color-border-main: #ffffff;
+      --color-shadow: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+
+  <!-- Initializer & Tailwind Config -->
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    // 1. Apply dark mode
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
+    // 2. Apply color theme
+    const savedTheme = localStorage.getItem('colorTheme') || 'theme-y2k';
+    document.documentElement.classList.add(savedTheme);
+    
+    // Configure Tailwind to use the 'class' strategy for dark mode and CSS variables for colors
     tailwind.config = {
       darkMode: 'class',
       theme: {
@@ -40,24 +137,29 @@
             'pixel': ['"Pixelify Sans"', 'sans-serif'],
           },
           colors: {
-            'y2k-pink': '#e94560',
-            'y2k-cyan': '#00f5d4',
-            'y2k-bg-dark': '#1a1a2e',
-            'y2k-bg-light': '#f3e9dc',
-            'y2k-surface-dark': '#16213e',
+            'primary': 'var(--color-primary)',
+            'secondary': 'var(--color-secondary)',
+            'background': 'var(--color-background)',
+            'surface': 'var(--color-surface)',
+            'text-main': 'var(--color-text-main)',
+            'text-muted': 'var(--color-text-muted)',
+            'border-main': 'var(--color-border-main)',
+            'accent-up': 'var(--color-accent-up)',
+            'accent-down': 'var(--color-accent-down)',
+            'gold': '#f59e0b',
+            'silver': '#6b7280',
+            'bronze': '#92400e',
           },
           boxShadow: {
-            'hard': '4px 4px 0px rgba(0,0,0,0.8)',
-            'hard-sm': '2px 2px 0px rgba(0,0,0,0.8)',
-            'hard-light': '4px 4px 0px rgba(0,0,0,0.2)',
-            'hard-sm-light': '2px 2px 0px rgba(0,0,0,0.2)',
+            'hard': '4px 4px 0px var(--color-shadow)',
+            'hard-sm': '2px 2px 0px var(--color-shadow)',
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-y2k-bg-light dark:bg-y2k-bg-dark font-pixel transition-colors duration-300">
+<body class="bg-background text-text-main font-pixel transition-colors duration-300">
   
   <!-- React root element -->
   <div id="root"></div>

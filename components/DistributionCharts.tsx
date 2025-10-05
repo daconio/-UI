@@ -4,12 +4,12 @@ import BarChart from './BarChart';
 import Avatar from './Avatar';
 
 const ChartCard: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className = '' }) => (
-  <div className={`relative p-4 bg-y2k-bg-light dark:bg-y2k-surface-dark border-2 border-black dark:border-y2k-cyan shadow-hard-light dark:shadow-hard overflow-hidden ${className}`}>
+  <div className={`relative p-4 bg-surface border-2 border-border-main shadow-hard overflow-hidden ${className}`}>
     <div className="absolute inset-0 bg-black/5 dark:bg-black/20 opacity-50 pointer-events-none" style={{
-      backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 245, 212, 0.1) 1px, rgba(0, 245, 212, 0.1) 2px)`,
+      backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 1px, var(--color-secondary-translucent, rgba(0, 245, 212, 0.1)) 1px, var(--color-secondary-translucent, rgba(0, 245, 212, 0.1)) 2px)`,
       backgroundSize: '100% 3px'
     }}></div>
-    <h3 className="text-md font-bold mb-4 text-center uppercase tracking-widest">{title}</h3>
+    <h3 className="text-md font-bold mb-4 text-center uppercase tracking-widest text-text-main">{title}</h3>
     <div className="h-48 relative z-10">
       {children}
     </div>
@@ -113,13 +113,13 @@ const DistributionCharts: React.FC<{ data: LeaderboardEntry[] }> = ({ data }) =>
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 transition-all duration-500 ease-in-out">
       <ChartCard title="Quest Completion Rate">
-        <BarChart data={chartData.submissionData} color="text-y2k-pink" />
+        <BarChart data={chartData.submissionData} color="text-primary" />
       </ChartCard>
       <ChartCard title="Loot Distribution">
-        <BarChart data={chartData.badgeData} color="text-y2k-cyan" />
+        <BarChart data={chartData.badgeData} color="text-secondary" />
       </ChartCard>
       <ChartCard title="Power Levels">
-        <BarChart data={chartData.scoreData} color="text-yellow-400" />
+        <BarChart data={chartData.scoreData} color="text-gold" />
       </ChartCard>
       <ChartCard title="Recent Transmissions">
         <BarChart data={chartData.recencyData} color="text-green-400" />
@@ -135,7 +135,7 @@ const DistributionCharts: React.FC<{ data: LeaderboardEntry[] }> = ({ data }) =>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm font-semibold truncate w-full text-black dark:text-white" title={team.label}>
+                <p className="text-sm font-semibold truncate w-full text-text-main" title={team.label}>
                   {team.label}
                 </p>
               </div>

@@ -12,7 +12,7 @@ interface LeaderboardProps {
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ data, onAvatarClick, sortConfig, onSort }) => {
   return (
-    <div className="border-2 border-black dark:border-y2k-cyan bg-y2k-bg-light dark:bg-y2k-surface-dark shadow-hard-light dark:shadow-hard">
+    <div className="border-2 border-border-main bg-surface shadow-hard">
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <LeaderboardHeader sortConfig={sortConfig} onSort={onSort} />

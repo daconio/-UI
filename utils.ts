@@ -1,5 +1,35 @@
 
+
 import { ScoreHistoryPoint } from './types';
+import { SOUND_EFFECTS } from './constants';
+
+// --- Sound Effects Utility ---
+const audioCache: { [key: string]: HTMLAudioElement } = {
+  refresh: new Audio(SOUND_EFFECTS.REFRESH),
+  sort: new Audio(SOUND_EFFECTS.SORT),
+  notification: new Audio(SOUND_EFFECTS.NOTIFICATION),
+  toggle: new Audio(SOUND_EFFECTS.TOGGLE),
+};
+
+// Set a global volume for all sound effects
+Object.values(audioCache).forEach(audio => {
+  audio.volume = 0.3;
+});
+
+type SoundKey = keyof typeof audioCache;
+
+export const playSound = (sound: SoundKey) => {
+  const audio = audioCache[sound];
+  if (audio) {
+    audio.currentTime = 0; // Rewind to start, allows replaying quickly
+    audio.play().catch(e => {
+      // Autoplay can be blocked by the browser, so we catch the error
+      console.error(`Could not play sound "${sound}":`, e);
+    });
+  }
+};
+// --- End Sound Effects ---
+
 
 export const formatRelativeTime = (dateString: string): string => {
     const date = new Date(dateString);

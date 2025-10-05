@@ -10,7 +10,7 @@ interface ScoreChartProps {
 const ScoreChart: React.FC<ScoreChartProps> = ({ history, width = 240, height = 100 }) => {
     if (history.length < 2) {
         return (
-            <div className="flex items-center justify-center h-full text-xs text-black p-4">
+            <div className="flex items-center justify-center h-full text-xs text-text-main p-4">
                 점수 기록을 사용할 수 없습니다.
             </div>
         );
@@ -52,24 +52,24 @@ const ScoreChart: React.FC<ScoreChartProps> = ({ history, width = 240, height = 
             <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#00f5d4" stopOpacity={0.4}/>
-                        <stop offset="95%" stopColor="#00f5d4" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="currentColor" stopOpacity={0.4}/>
+                        <stop offset="95%" stopColor="currentColor" stopOpacity={0}/>
                     </linearGradient>
                 </defs>
                 <path d={areaPath} fill="url(#chartGradient)" />
                 <polyline
                     fill="none"
-                    stroke="#00f5d4"
+                    stroke="currentColor"
                     strokeWidth="1.5"
                     points={points}
                 />
                  {history.map((h, i) => {
                     const x = ((h.date.getTime() - minDate) / dateRange) * width;
                     const y = height - ((h.score - minScore) / scoreRange) * height;
-                    return <circle key={i} cx={x} cy={y} r="2" fill="#00f5d4" />;
+                    return <circle key={i} cx={x} cy={y} r="2" fill="currentColor" />;
                 })}
             </svg>
-            <div className="flex justify-between text-xs text-black mt-1 px-1">
+            <div className="flex justify-between text-xs text-text-main mt-1 px-1">
                 <span>Min: {minScore.toFixed(4)}</span>
                 <span>Max: {maxScore.toFixed(4)}</span>
             </div>

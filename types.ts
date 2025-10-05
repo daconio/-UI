@@ -12,8 +12,6 @@ export interface Member {
   bgColorClass: string;
 }
 
-export type MedalType = 'gold' | 'silver' | 'bronze' | 'none';
-
 export type SortKey = 'rank' | 'team' | 'entries' | 'score' | 'lastSubmission' | 'badges';
 export type SortDirection = 'ascending' | 'descending';
 
@@ -25,9 +23,17 @@ export interface Badge {
   description: string;
 }
 
+// Fix: Add MedalType to resolve import error in Medal.tsx.
+export type MedalType = 'gold' | 'silver' | 'bronze' | 'none';
+
 export interface ScoreHistoryPoint {
   score: number;
   date: Date;
+}
+
+export interface RankHistoryPoint {
+  rank: number;
+  timestamp: number;
 }
 
 export interface LeaderboardEntry {
@@ -36,13 +42,14 @@ export interface LeaderboardEntry {
   rankChange: number;
   team: string;
   members: Member[];
-  medal: MedalType;
   badges: Badge[];
   score: number;
   entries: number;
   lastSubmission: string;
   joinDate: string;
   scoreHistory: ScoreHistoryPoint[];
+  rankHistory: RankHistoryPoint[];
   c_time: string; // Raw date string for accurate sorting
   isNew?: boolean;
+  hasNewSubmission?: boolean;
 }

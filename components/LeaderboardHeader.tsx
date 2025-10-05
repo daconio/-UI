@@ -7,8 +7,8 @@ interface LeaderboardHeaderProps {
 }
 
 const SortIcon: React.FC<{ direction?: SortDirection | false }> = ({ direction }) => {
-  const activeClass = "text-black dark:text-y2k-cyan";
-  const inactiveClass = "text-gray-800 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white";
+  const activeClass = "text-text-main";
+  const inactiveClass = "text-text-muted group-hover:text-text-main";
   
   if (direction === 'ascending') {
     return <i className={`fas fa-sort-up ml-1 ${activeClass}`}></i>;
@@ -32,13 +32,13 @@ const LeaderboardHeader: React.FC<LeaderboardHeaderProps> = ({ sortConfig, onSor
   ];
 
   return (
-    <thead className="bg-gray-200 dark:bg-black/50">
-      <tr className="border-b-2 border-black dark:border-y2k-cyan">
+    <thead className="bg-surface">
+      <tr className="border-b-2 border-border-main">
         {headers.map((header) => (
           <th
             key={header.name}
             scope="col"
-            className={`py-3 px-6 text-${header.align} text-sm font-bold text-black dark:text-white uppercase tracking-wider ${header.width}`}
+            className={`py-3 px-6 text-${header.align} text-sm font-bold text-text-main uppercase tracking-wider ${header.width}`}
             aria-sort={header.sortable && sortConfig.key === header.key ? sortConfig.direction : 'none'}
           >
             {header.sortable && header.key ? (

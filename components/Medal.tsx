@@ -13,13 +13,13 @@ const Medal: React.FC<MedalProps> = ({ type }) => {
   let colorClass = '';
   switch (type) {
     case 'gold':
-      colorClass = 'text-yellow-500';
+      colorClass = 'text-gold';
       break;
     case 'silver':
-      colorClass = 'text-gray-800';
+      colorClass = 'text-silver';
       break;
     case 'bronze':
-      colorClass = 'text-amber-700';
+      colorClass = 'text-bronze';
       break;
   }
 

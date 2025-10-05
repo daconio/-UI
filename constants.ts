@@ -3,8 +3,8 @@ import { Badge } from './types';
 export const LEADERBOARD_API_URL = 'https://newapi.dacon.io/leaderboard/V2/public?cpt_id=236575';
 
 const avatarColors = [
-  'bg-y2k-pink',
-  'bg-y2k-cyan',
+  'bg-primary',
+  'bg-secondary',
   'bg-yellow-400',
   'bg-purple-500',
   'bg-green-400',
@@ -22,57 +22,32 @@ const bios = [
 
 export const getRandomBio = () => bios[Math.floor(Math.random() * bios.length)];
 
-const PIXEL_ART_AVATAR_URLS = [
-  'https://api.iconify.design/pixelarticons/user.svg',
-  'https://api.iconify.design/pixelarticons/user-plus.svg',
-  'https://api.iconify.design/pixelarticons/user-minus.svg',
-  'https://api.iconify.design/pixelarticons/users.svg',
-  'https://api.iconify.design/pixelarticons/android.svg',
-  'https://api.iconify.design/pixelarticons/bug.svg',
-  'https://api.iconify.design/pixelarticons/cat.svg',
-  'https://api.iconify.design/pixelarticons/dog.svg',
-  'https://api.iconify.design/pixelarticons/ghost.svg',
-  'https://api.iconify.design/pixelarticons/ninja.svg',
-  'https://api.iconify.design/pixelarticons/robot.svg',
-  'https://api.iconify.design/pixelarticons/alien.svg',
-  'https://api.iconify.design/pixelarticons/head.svg',
-  'https://api.iconify.design/pixelarticons/human-handsdown.svg',
-  'https://api.iconify.design/pixelarticons/human-male.svg',
-  'https://api.iconify.design/pixelarticons/human-female.svg',
-  'https://api.iconify.design/pixelarticons/human-run.svg',
-  'https://api.iconify.design/pixelarticons/mood-happy.svg',
-  'https://api.iconify.design/pixelarticons/mood-sad.svg',
-  'https://api.iconify.design/pixelarticons/mood-neutral.svg',
-  'https://api.iconify.design/openmoji/man-mage.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/woman-mage.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/man-elf.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/woman-elf.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/man-vampire.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/woman-vampire.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/man-zombie.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/woman-zombie.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/man-genie.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/woman-genie.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/robot.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/ghost.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/alien.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/alien-monster.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/ogre.svg?color=%23888888',
-  'https://api.iconify.design/openmoji/goblin.svg?color=%23888888',
-  'https://api.iconify.design/pepicons-pop/person-circle.svg',
-  'https://api.iconify.design/pepicons-print/person-circle.svg',
-  'https://api.iconify.design/streamline-emojis/female-technologist-1.svg',
-  'https://api.iconify.design/streamline-emojis/male-technologist-1.svg',
-  'https://api.iconify.design/streamline-emojis/man-detective-1.svg',
-  'https://api.iconify.design/streamline-emojis/woman-detective-1.svg',
-  'https://api.iconify.design/streamline-emojis/woman-super-villain-1.svg',
-  'https://api.iconify.design/streamline-emojis/man-super-villain-1.svg',
-  'https://api.iconify.design/streamline-emojis/woman-super-hero-1.svg',
-  'https://api.iconify.design/streamline-emojis/man-super-hero-1.svg',
-];
+export const getCharacterAvatarUrl = (seed: string) => `https://api.dicebear.com/8.x/adventurer/svg?seed=${encodeURIComponent(seed)}`;
 
-export const getRandomPixelAvatarUrl = () => PIXEL_ART_AVATAR_URLS[Math.floor(Math.random() * PIXEL_ART_AVATAR_URLS.length)];
 
+export const GOLD_MEDAL_BADGE: Badge = {
+  id: 'gold_medal',
+  iconClass: 'fas fa-medal',
+  name: '1위',
+  colorClass: 'text-gold',
+  description: '리더보드 1위를 차지했습니다.',
+};
+
+export const SILVER_MEDAL_BADGE: Badge = {
+  id: 'silver_medal',
+  iconClass: 'fas fa-medal',
+  name: '2위',
+  colorClass: 'text-silver',
+  description: '리더보드 2위를 차지했습니다.',
+};
+
+export const BRONZE_MEDAL_BADGE: Badge = {
+  id: 'bronze_medal',
+  iconClass: 'fas fa-medal',
+  name: '3위',
+  colorClass: 'text-bronze',
+  description: '리더보드 3위를 차지했습니다.',
+};
 
 export const TOP_SUBMISSIONS_BADGE: Badge = {
   id: 'top_submissions',
@@ -86,7 +61,7 @@ export const TOP_RECENCY_BADGE: Badge = {
   id: 'top_recency',
   iconClass: 'fas fa-rocket',
   name: '최근 제출 Top 10',
-  colorClass: 'text-y2k-cyan',
+  colorClass: 'text-secondary',
   description: '가장 최근에 제출한 상위 10팀에게 주어집니다.',
 };
 
@@ -94,7 +69,7 @@ export const RISING_STAR_BADGE: Badge = {
   id: 'rising_star',
   iconClass: 'fas fa-meteor',
   name: '떠오르는 샛별',
-  colorClass: 'text-y2k-pink',
+  colorClass: 'text-primary',
   description: '새롭게 등장하여 상위 20%에 진입한 팀입니다.',
 };
 
@@ -102,7 +77,7 @@ export const BIG_JUMP_BADGE: Badge = {
   id: 'big_jump',
   iconClass: 'fas fa-angles-up',
   name: '엄청난 도약',
-  colorClass: 'text-green-400',
+  colorClass: 'text-accent-up',
   description: '최근 순위가 5계단 이상 급상승한 팀입니다.',
 };
 
@@ -120,4 +95,19 @@ export const COLLABORATION_BADGE: Badge = {
   name: '협업',
   colorClass: 'text-orange-400',
   description: '2명 이상의 팀원으로 구성된 팀입니다.',
+};
+
+export const STREAK_STARTER_BADGE: Badge = {
+  id: 'streak_starter',
+  iconClass: 'fas fa-fire',
+  name: '연속 상승',
+  colorClass: 'text-accent-down',
+  description: '3회 연속으로 순위가 상승한 팀입니다.',
+};
+
+export const SOUND_EFFECTS = {
+  REFRESH: 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAABwAPS/5P/U/9L/0//U/9L/0v/U/9L/0//S/9P/0v/U/9L/0//S/9P/0v/T/9L/1P/T/wA=',
+  SORT: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=',
+  NOTIFICATION: 'data:audio/wav;base64,UklGRlIAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YSBIAACAgLz8/vr7/PX0+vPz9fXz9Pbw9fHu8e/u8O3r7ezp6uXm5uLh4N/d3dva2tXX1tbU09LS0c/OzsrJyMfFxMPBwcC/vr28urq5uLe2tri0s7GwsKujo6Giod/e3dva2tXV1dTT0tHRz87OysnIx8XFw8LBwL++vb27u7q5uLa2tri0s7GwsKujo6GhoqGiod/f3t7e3d3c3Nvb2tra2dnY19fX1dXV1NTT09LR0c/Pz87OzsjIyMfHx8TExMLCwsHBwL+/v76+vr29vbu7u7m5ubm5t7e3tra2tbW1tLS0s7OzsLCwr6+vo6OjoaGhoKCg',
+  TOGGLE: 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQIAAABwAPS/5P/U/9L/0//U/9L/0v/U/9L/0//S/9P/0v/U/9L/0//S/9P/0v/T/9L/1P/T/wA=',
 };

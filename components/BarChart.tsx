@@ -12,7 +12,7 @@ interface BarChartProps {
 
 const BarChart: React.FC<BarChartProps> = ({ data, color }) => {
   if (!data || data.length === 0 || data.every(d => d.value === 0)) {
-    return <div className="flex items-center justify-center h-full text-center text-sm">NO DATA AVAILABLE</div>;
+    return <div className="flex items-center justify-center h-full text-center text-sm text-text-muted">NO DATA AVAILABLE</div>;
   }
   
   const maxValue = Math.max(...data.map(d => d.value), 0);
@@ -22,7 +22,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, color }) => {
   const chartWidth = data.length * (barWidth + barMargin) - barMargin;
 
   return (
-    <div className="flex justify-center overflow-x-auto pb-2">
+    <div className="flex justify-center overflow-x-auto pb-2 text-text-main">
       <svg width={chartWidth} height={chartHeight + 40} role="img" aria-label="Bar chart">
         <g>
           {data.map((item, index) => {
@@ -38,7 +38,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, color }) => {
                   y={y}
                   width={barWidth}
                   height={barHeight}
-                  className={`${color} transition-all duration-200 ease-in-out group-hover:brightness-125 group-hover:[filter:drop-shadow(2px_2px_0px_rgba(0,0,0,0.8))]`}
+                  className={`${color} transition-all duration-200 ease-in-out group-hover:brightness-125 group-hover:shadow-hard-sm`}
                   fill="currentColor"
                 />
                 <text

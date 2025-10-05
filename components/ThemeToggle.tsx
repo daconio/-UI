@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { playSound } from '../utils';
 
 const ThemeToggle: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -21,8 +23,11 @@ const ThemeToggle: React.FC = () => {
 
   return (
     <button
-      onClick={() => setIsDarkMode(!isDarkMode)}
-      className="p-2 w-10 h-10 bg-y2k-bg-light dark:bg-y2k-surface-dark text-black dark:text-y2k-cyan border-2 border-black dark:border-y2k-cyan shadow-hard-light dark:shadow-hard hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[2px] active:translate-y-[2px] hover:shadow-hard-sm-light dark:hover:shadow-hard-sm active:shadow-none transition-all"
+      onClick={() => {
+        playSound('toggle');
+        setIsDarkMode(!isDarkMode);
+      }}
+      className="p-2 w-10 h-10 bg-surface text-secondary border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
       aria-label="Toggle theme"
     >
       {isDarkMode ? (

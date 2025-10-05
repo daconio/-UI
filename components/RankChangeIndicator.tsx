@@ -5,12 +5,14 @@ interface RankChangeIndicatorProps {
 }
 
 const RankChangeIndicator: React.FC<RankChangeIndicatorProps> = ({ change }) => {
+  const SIGNIFICANT_CHANGE_THRESHOLD = 5;
   const hasChange = change !== 0;
+  const isSignificant = Math.abs(change) >= SIGNIFICANT_CHANGE_THRESHOLD;
 
   const getIndicator = () => {
     if (change > 0) {
       return (
-        <span className="flex items-center justify-center text-sm font-medium text-blue-500">
+        <span className="flex items-center justify-center text-sm font-bold text-accent-up">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-0.5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
           </svg>
@@ -20,7 +22,7 @@ const RankChangeIndicator: React.FC<RankChangeIndicatorProps> = ({ change }) => 
     }
     if (change < 0) {
       return (
-        <span className="flex items-center justify-center text-sm font-medium text-red-500">
+        <span className="flex items-center justify-center text-sm font-bold text-accent-down">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-0.5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
@@ -28,7 +30,7 @@ const RankChangeIndicator: React.FC<RankChangeIndicatorProps> = ({ change }) => 
         </span>
       );
     }
-    return <span className="text-sm font-medium text-black dark:text-white">-</span>;
+    return <span className="text-sm font-medium text-text-main">-</span>;
   };
 
   const getTooltipText = () => {
@@ -36,10 +38,18 @@ const RankChangeIndicator: React.FC<RankChangeIndicatorProps> = ({ change }) => 
     if (change < 0) return `순위 ${Math.abs(change)} 하락`;
     return '순위 변동 없음';
   };
+  
+  const getAnimationClass = () => {
+    if (!hasChange) return '';
+    if (isSignificant) {
+      return change > 0 ? 'animate-significant-rank-up' : 'animate-significant-rank-down';
+    }
+    return 'animate-rank-change';
+  };
 
   return (
     <div className="relative group flex justify-center items-center">
-      <div className={hasChange ? 'animate-rank-change' : ''}>
+      <div className={`${getAnimationClass()} px-2 py-1 rounded-md`}>
         {getIndicator()}
       </div>
       <span className="absolute bottom-full mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -54,6 +64,34 @@ const RankChangeIndicator: React.FC<RankChangeIndicatorProps> = ({ change }) => 
           }
           .animate-rank-change {
             animation: rankChangePulse 0.6s cubic-bezier(0.5, 0, 0.5, 1);
+          }
+          
+          @keyframes significantRankUpPulse {
+            0%, 100% {
+              transform: scale(1);
+              box-shadow: none;
+            }
+            50% {
+              transform: scale(1.2);
+              box-shadow: 0 0 15px 5px var(--color-accent-up);
+            }
+          }
+          .animate-significant-rank-up {
+            animation: significantRankUpPulse 1.2s ease-in-out;
+          }
+
+          @keyframes significantRankDownPulse {
+            0%, 100% {
+              transform: scale(1);
+              box-shadow: none;
+            }
+            50% {
+              transform: scale(1.2);
+              box-shadow: 0 0 15px 5px var(--color-accent-down);
+            }
+          }
+          .animate-significant-rank-down {
+            animation: significantRankDownPulse 1.2s ease-in-out;
           }
         `}
       </style>
