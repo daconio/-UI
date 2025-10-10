@@ -1,5 +1,5 @@
 {
-  "name": "동적-경쟁-리더보드",
+  "name": "toss-competition-leaderboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",

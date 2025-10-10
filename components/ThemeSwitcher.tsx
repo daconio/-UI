@@ -46,17 +46,20 @@ const ThemeSwitcher: React.FC = () => {
   const currentThemeName = themes.find(t => t.id === currentTheme)?.name || 'Theme';
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative group" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-center p-2 w-32 h-10 bg-surface text-text-main border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
         aria-haspopup="true"
         aria-expanded={isOpen}
-        aria-label="Select theme"
+        aria-label="테마 변경"
       >
         <i className="fas fa-palette mr-2"></i>
         <span className="font-bold text-sm">{currentThemeName}</span>
       </button>
+      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+        테마 변경
+      </span>
       
       {isOpen && (
         <div className="absolute top-full right-0 mt-2 w-40 bg-surface border-2 border-border-main shadow-hard z-30" role="menu">

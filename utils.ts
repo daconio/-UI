@@ -1,5 +1,3 @@
-
-
 import { ScoreHistoryPoint } from './types';
 import { SOUND_EFFECTS } from './constants';
 
@@ -7,7 +5,7 @@ import { SOUND_EFFECTS } from './constants';
 const audioCache: { [key: string]: HTMLAudioElement } = {
   refresh: new Audio(SOUND_EFFECTS.REFRESH),
   sort: new Audio(SOUND_EFFECTS.SORT),
-  notification: new Audio(SOUND_EFFECTS.NOTIFICATION),
+  dataLoaded: new Audio(SOUND_EFFECTS.DATA_LOADED),
   toggle: new Audio(SOUND_EFFECTS.TOGGLE),
 };
 

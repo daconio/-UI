@@ -1,7 +1,6 @@
 
-
-import React, { useState, useEffect } from 'react';
-import { LeaderboardEntry, Member } from '../types';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { LeaderboardEntry, Member, Badge } from '../types';
 import Avatar from './Avatar';
 import BadgeIcon from './BadgeIcon';
 import RankChangeIndicator from './RankChangeIndicator';
@@ -9,6 +8,16 @@ import AnimatedScore from './AnimatedScore';
 import TeamPopover from './TeamPopover';
 import FlipNumber from './FlipNumber';
 import MemberPopover from './MemberPopover';
+import Confetti from './Confetti';
+
+// A custom hook to get the previous value of a prop or state.
+function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 interface LeaderboardRowProps {
   entry: LeaderboardEntry;
@@ -18,6 +27,8 @@ interface LeaderboardRowProps {
 
 const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, rowIndex }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const prevScore = usePrevious(entry.score);
+  const prevBadges = usePrevious(entry.badges);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 10);
@@ -41,6 +52,15 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
     return '';
   };
 
+  const shouldAnimate = entry.rank <= 16;
+  const isTop3 = entry.rank <= 3;
+  const isTop1 = entry.rank === 1;
+
+  // Check if the score has actually changed from the previous render.
+  const hasScoreChanged = prevScore !== undefined && prevScore !== entry.score;
+  
+  const prevBadgeIds = useMemo(() => new Set((prevBadges || []).map(b => b.id)), [prevBadges]);
+
   return (
     <tr
       className={`
@@ -48,11 +68,16 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
         hover:bg-primary/20 transition-all duration-200
         ${getRankRowClass(entry.rank)}
         ${getAnimationClass()}
-        ${isMounted ? 'opacity-100' : 'opacity-0'}
+        ${shouldAnimate ? 'opacity-0' : (isMounted ? 'opacity-100' : 'opacity-0')}
+        ${shouldAnimate && isMounted ? 'animate-slide-in-from-right' : ''}
       `}
-      style={{ transitionDelay: `${rowIndex * 35}ms` }}
+      style={{
+        transitionDelay: shouldAnimate ? '0s' : `${rowIndex * 35}ms`,
+        animationDelay: shouldAnimate ? `${(entry.rank - 1) * 0.3}s` : '0s'
+      }}
     >
-      <td className="h-20 px-6 text-center">
+      <td className="h-20 px-6 text-center relative overflow-visible">
+        {isTop1 && isMounted && <Confetti />}
         <div className="flex items-center justify-center text-xl font-bold text-text-main">
           <FlipNumber value={entry.rank} />
         </div>
@@ -65,10 +90,16 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
           <div className="mr-3 flex space-x-[5px]">
             {entry.members.map((member, index) => {
               const isLeader = entry.members.length > 1 && index === 0;
+              const avatarFlipDelay = shouldAnimate ? (entry.rank - 1) * 0.3 : 0;
               return (
                 <MemberPopover key={member.id} member={member}>
                   <div onClick={() => onAvatarClick(member)} className="cursor-pointer">
-                    <Avatar member={member} isLeader={isLeader} />
+                    <Avatar 
+                      member={member} 
+                      isLeader={isLeader}
+                      applyFlipAnimation={shouldAnimate && isMounted}
+                      flipAnimationDelay={avatarFlipDelay}
+                    />
                   </div>
                 </MemberPopover>
               );
@@ -80,10 +111,14 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
         </div>
       </td>
       <td className="h-20 px-6 text-center">
-        <div className="flex items-center justify-center space-x-3">
-          {entry.badges.map((badge, index) => (
-            <BadgeIcon key={index} badge={badge} />
-          ))}
+        <div 
+          className={`flex items-center justify-center space-x-3 ${isTop3 && shouldAnimate && isMounted ? 'animate-badge-swoop-in' : ''}`}
+          style={isTop3 && shouldAnimate && isMounted ? { animationDelay: `${(entry.rank - 1) * 0.3}s` } : {}}
+        >
+          {entry.badges.map((badge, index) => {
+            const isNew = prevBadges !== undefined && !prevBadgeIds.has(badge.id);
+            return <BadgeIcon key={index} badge={badge} isNew={isNew} />;
+          })}
         </div>
       </td>
       <td className="h-20 px-6 text-center font-mono text-lg text-text-main">
@@ -91,7 +126,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
           <FlipNumber value={entry.entries} />
         </div>
       </td>
-      <td className={`h-20 px-6 text-right font-mono text-lg text-text-main ${entry.hasNewSubmission ? 'animate-score-update' : ''}`}>
+      <td className={`h-20 px-6 text-right font-mono text-lg text-text-main ${hasScoreChanged ? 'animate-score-update' : ''}`}>
         <AnimatedScore value={entry.score} duration={750} />
       </td>
       <td className="h-20 px-6 text-right text-sm text-text-main">
@@ -176,6 +211,51 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, onAvatarClick, r
           .animate-flip-in-bottom {
             animation: flipInBottom 250ms ease-out 250ms forwards;
             transform-origin: top;
+          }
+
+          /* New animation for top 10 */
+          @keyframes slideInFromRight {
+            0% {
+              transform: translateX(50%);
+              opacity: 0;
+            }
+            60% {
+              transform: translateX(-10px);
+              opacity: 1;
+            }
+            80% {
+              transform: translateX(5px);
+            }
+            100% {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          .animate-slide-in-from-right {
+            /* A bouncy ease-out effect */
+            animation: slideInFromRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+          }
+
+          /* New animation for top 3 badges */
+          @keyframes badgeSwoopIn {
+            0% {
+              transform: translateX(40px);
+              opacity: 0;
+            }
+            60% {
+              transform: translateX(-20px);
+              opacity: 1;
+            }
+            80% {
+              transform: translateX(10px);
+            }
+            100% {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          .animate-badge-swoop-in {
+            animation: badgeSwoopIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
           }
         `}
       </style>

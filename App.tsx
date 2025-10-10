@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Leaderboard from './components/Leaderboard';
 import MemberDetailModal from './components/MemberDetailModal';
@@ -10,6 +8,7 @@ import LeaderboardStats from './components/LeaderboardStats';
 import DistributionCharts from './components/DistributionCharts';
 import HelpGuideModal from './components/HelpGuideModal';
 import FeedbackModal from './components/FeedbackModal'; // Import the new component
+import ManualModal from './components/ManualModal'; // Import the new component
 import { 
   getRandomColor, 
   getRandomBio, 
@@ -81,12 +80,23 @@ function App() {
   const [showCharts, setShowCharts] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+  const [isDataJustLoaded, setIsDataJustLoaded] = useState(false);
   const previousPublicDataRef = useRef<LeaderboardEntry[]>([]);
   const rankStreakRef = useRef<Map<number, number>>(new Map());
 
   useEffect(() => {
     previousPublicDataRef.current = publicData;
   }, [publicData]);
+
+  useEffect(() => {
+    if (isDataJustLoaded) {
+      const timer = setTimeout(() => {
+        setIsDataJustLoaded(false);
+      }, 1500); // Animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isDataJustLoaded]);
 
   const handleAvatarClick = (member: Member) => {
     setSelectedMember(member);
@@ -112,6 +122,15 @@ function App() {
 
   const handleCloseFeedbackModal = () => {
     setIsFeedbackModalOpen(false);
+  };
+
+  const handleOpenManualModal = () => {
+    playSound('toggle');
+    setIsManualModalOpen(true);
+  };
+
+  const handleCloseManualModal = () => {
+    setIsManualModalOpen(false);
   };
 
   const handleRefresh = async (isUserInitiated: boolean = false) => {
@@ -159,8 +178,6 @@ function App() {
 
       const newStreakMap = new Map<number, number>();
 
-      let shouldPlayNotification = false;
-
       const newData: LeaderboardEntry[] = leaderboardList.map((item) => {
         const oldEntry = oldDataMap.get(item.team_id);
         const oldRank = oldEntry?.rank;
@@ -193,7 +210,6 @@ function App() {
         let hasNewSubmission = false;
         if (previousPublicDataRef.current.length > 0 && oldEntry && new Date(item.c_time) > new Date(oldEntry.c_time)) {
             hasNewSubmission = true;
-            shouldPlayNotification = true;
         }
 
         const currentStreak = rankStreakRef.current.get(item.team_id) || 0;
@@ -257,12 +273,6 @@ function App() {
                 }
             }
         }
-        
-        // Check if new badges were awarded
-        const oldBadgeCount = oldEntry?.badges.length ?? 0;
-        if (badges.length > oldBadgeCount) {
-            shouldPlayNotification = true;
-        }
 
         // --- Rank History Logic ---
         const historyKey = `rankHistory_${item.team_id}`;
@@ -312,13 +322,13 @@ function App() {
         };
       });
 
-      if (shouldPlayNotification && isUserInitiated) {
-        setTimeout(() => playSound('notification'), 300);
-      }
-
       rankStreakRef.current = newStreakMap;
       setPublicData(newData);
       setLeaderboardKey(Date.now());
+      if (isUserInitiated) {
+        setIsDataJustLoaded(true);
+        setTimeout(() => playSound('dataLoaded'), 300);
+      }
 
     } catch (error) {
       console.error("Failed to refresh leaderboard:", error);
@@ -421,13 +431,30 @@ function App() {
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
           <div className="flex items-center gap-4">
             <h1 className="text-4xl font-bold uppercase text-shadow-lg">Ranking Terminal</h1>
-            <button
-              onClick={handleOpenHelpModal}
-              className="p-2 w-10 h-10 bg-surface text-secondary border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
-              aria-label="가이드 보기"
-            >
-              <i className="fas fa-question-circle h-5 w-5"></i>
-            </button>
+            <div className="relative group">
+              <button
+                onClick={handleOpenHelpModal}
+                className="p-2 w-10 h-10 bg-surface text-secondary border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
+                aria-label="가이드 보기"
+              >
+                <i className="fas fa-question-circle h-5 w-5"></i>
+              </button>
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                가이드 보기
+              </span>
+            </div>
+            <div className="relative group">
+              <button
+                onClick={handleOpenManualModal}
+                className="p-2 w-10 h-10 bg-surface text-secondary border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
+                aria-label="매뉴얼 보기"
+              >
+                <i className="fas fa-book-open h-5 w-5"></i>
+              </button>
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                매뉴얼 보기
+              </span>
+            </div>
           </div>
           
           <div className="flex items-center gap-4">
@@ -445,26 +472,36 @@ function App() {
               />
             </div>
             
-            <button
-              onClick={() => {
-                playSound('sort');
-                setShowCharts(!showCharts);
-              }}
-              className="flex items-center px-4 py-2 font-bold text-secondary bg-surface border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
-              aria-label={showCharts ? 'Hide Data Stream' : 'Analyze Data Stream'}
-            >
-              <i className="fas fa-chart-bar mr-2"></i>
-              {showCharts ? 'Hide Data Stream' : 'Analyze Data Stream'}
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => {
+                  playSound('sort');
+                  setShowCharts(!showCharts);
+                }}
+                className="flex items-center px-4 py-2 font-bold text-secondary bg-surface border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all"
+                aria-label={showCharts ? '데이터 스트림 숨기기' : '데이터 스트림 분석'}
+              >
+                <i className="fas fa-chart-bar mr-2"></i>
+                {showCharts ? 'Hide Data Stream' : 'Analyze Data Stream'}
+              </button>
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                {showCharts ? '차트 숨기기' : '데이터 분석 보기'}
+              </span>
+            </div>
             
-            <button
-              onClick={() => handleRefresh(true)}
-              disabled={isLoading}
-              className="flex items-center px-4 py-2 font-bold text-secondary bg-surface border-2 border-border-main shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <i className={`fas fa-sync-alt ${isLoading ? 'animate-spin' : ''} mr-2`}></i>
-              {isLoading ? 'Scanning...' : 'Refresh Rankings'}
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => handleRefresh(true)}
+                disabled={isLoading}
+                className="flex items-center px-4 py-2 font-bold text-secondary bg-surface border-2 border-border-main shadow-hard hover:shadow-hard-sm active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:animate-bounce-subtle active:animate-shake-subtle"
+              >
+                <i className={`fas fa-sync-alt ${isLoading ? 'animate-spin' : ''} mr-2`}></i>
+                {isLoading ? 'Scanning...' : 'Refresh Rankings'}
+              </button>
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                랭킹 새로고침
+              </span>
+            </div>
           </div>
         </div>
       
@@ -479,6 +516,7 @@ function App() {
             onAvatarClick={handleAvatarClick}
             sortConfig={sortConfig}
             onSort={handleSort}
+            className={isDataJustLoaded ? 'animate-glow-leaderboard' : ''}
           />
         )}
       </main>
@@ -486,15 +524,21 @@ function App() {
       <MemberDetailModal member={selectedMember} onClose={handleCloseModal} />
       <HelpGuideModal isOpen={isHelpModalOpen} onClose={handleCloseHelpModal} />
       <FeedbackModal isOpen={isFeedbackModalOpen} onClose={handleCloseFeedbackModal} />
+      <ManualModal isOpen={isManualModalOpen} onClose={handleCloseManualModal} />
 
       {/* Floating Feedback Button */}
-      <button
-        onClick={handleOpenFeedbackModal}
-        className="fixed bottom-6 right-6 z-30 p-3 w-14 h-14 bg-primary text-white border-2 border-black shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all flex items-center justify-center group"
-        aria-label="피드백 보내기"
-      >
-        <i className="fas fa-comment-dots text-2xl group-hover:animate-bounce"></i>
-      </button>
+      <div className="fixed bottom-6 right-6 z-30 group">
+        <button
+          onClick={handleOpenFeedbackModal}
+          className="p-3 w-14 h-14 bg-primary text-white border-2 border-black shadow-hard hover:-translate-x-px hover:-translate-y-px active:translate-x-px active:translate-y-px hover:shadow-hard-sm active:shadow-none transition-all flex items-center justify-center"
+          aria-label="피드백 보내기"
+        >
+          <i className="fas fa-comment-dots text-2xl group-hover:animate-bounce"></i>
+        </button>
+        <span className="absolute bottom-1/2 translate-y-1/2 right-full mr-3 w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          피드백 보내기
+        </span>
+      </div>
 
       <footer className="pt-8 border-t-2 border-border-main mt-8 bg-surface">
         <div className="container mx-auto px-4 py-8">

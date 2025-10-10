@@ -8,11 +8,12 @@ interface LeaderboardProps {
   onAvatarClick: (member: Member) => void;
   sortConfig: { key: SortKey; direction: SortDirection };
   onSort: (key: SortKey) => void;
+  className?: string;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ data, onAvatarClick, sortConfig, onSort }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ data, onAvatarClick, sortConfig, onSort, className }) => {
   return (
-    <div className="border-2 border-border-main bg-surface shadow-hard">
+    <div className={`border-2 border-border-main bg-surface shadow-hard ${className || ''}`}>
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <LeaderboardHeader sortConfig={sortConfig} onSort={onSort} />
